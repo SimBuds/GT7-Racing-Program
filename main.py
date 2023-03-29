@@ -1,9 +1,3 @@
-import manager as manager
+import application as app
 
-manager = manager.Manager()
-
-manager.DisplayLaps()
-
-manager.DisplayMaps()
-
-manager.DisplayPlayers()
+app.run()

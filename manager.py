@@ -160,3 +160,7 @@ class Manager:
             if Lap[0] == Id:
                 return Lap
         return None
+    
+    def ShowAllMaps(self):
+        for Map in self.Maps:
+            print(Map[1])

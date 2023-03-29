@@ -2,7 +2,6 @@ import manager as manager
 
 manager = manager.Manager()
 
-
 manager.AddMap("Map1")
 manager.AddMap("Map2")
 manager.AddMap("Map3")

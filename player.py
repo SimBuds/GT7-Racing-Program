@@ -2,8 +2,8 @@ import lap as Lap
 
 class Player:
     def __init__(self, Id, Name):
-        self.Id = Id
-        self.Name = Name
+        self.Id = Id.int()
+        self.Name = Name.str()
         self.Laps = []
 
     def __str__(self):

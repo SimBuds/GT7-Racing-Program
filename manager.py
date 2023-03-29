@@ -10,10 +10,13 @@ class Manager:
         self. Maps = []
         self. Players = []
         self. Laps = []
-        self.CreateDB()
-        self. LoadMaps()
-        self. LoadPlayers()
-        self. LoadLaps()
+        if self.Connection is not None:
+            self.CreateDB()
+            self. LoadMaps()
+            self. LoadPlayers()
+            self. LoadLaps()
+        else:
+            print("Error: Connection failed")
 
     def CreateConnection(self):
         try:

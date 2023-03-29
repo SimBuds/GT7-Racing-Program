@@ -18,6 +18,7 @@ class Manager:
         else:
             print("Error: Connection failed")
 
+    # SQL Functions
     def CreateConnection(self):
         try:
             if not os.path.exists(os.path.dirname(os.path.abspath(__file__)) + "/database.db"):
@@ -80,6 +81,56 @@ class Manager:
         except Error as e:
             print(e)
 
+    def EditLap(self, Id, MapId, LapTime, PlayerId):
+        try:
+            self.Cursor.execute("UPDATE Laps SET MapId = ?, LapTime = ?, PlayerId = ? WHERE Id = ?", (MapId, LapTime, PlayerId, Id))
+            self.Connection.commit()
+            self.LoadLaps()
+        except Error as e:
+            print(e)
+
+    def EditMap(self, Id, MapName):
+        try:
+            self.Cursor.execute("UPDATE Map SET MapName = ? WHERE Id = ?", (MapName, Id))
+            self.Connection.commit()
+            self.LoadMaps()
+        except Error as e:
+            print(e)
+
+
+    def EditPlayer(self, Id, PlayerName):
+        try:
+            self.Cursor.execute("UPDATE Player SET Name = ? WHERE Id = ?", (PlayerName, Id))
+            self.Connection.commit()
+            self.LoadPlayers()
+        except Error as e:
+            print(e)
+    
+    def DeleteLap(self, Id):
+        try:
+            self.Cursor.execute("DELETE FROM Laps WHERE Id = ?", (Id,))
+            self.Connection.commit()
+            self.LoadLaps()
+        except Error as e:
+            print(e)
+
+    def DeleteMap(self, Id):
+        try:
+            self.Cursor.execute("DELETE FROM Map WHERE Id = ?", (Id,))
+            self.Connection.commit()
+            self.LoadMaps()
+        except Error as e:
+            print(e)
+
+    def DeletePlayer(self, Id):
+        try:
+            self.Cursor.execute("DELETE FROM Player WHERE Id = ?", (Id,))
+            self.Connection.commit()
+            self.LoadPlayers()
+        except Error as e:
+            print(e)
+
+    # Array Handling Functions
     def DisplayMaps(self):
         for Map in self.Maps:
             print(Map)
@@ -90,4 +141,22 @@ class Manager:
 
     def DisplayLaps(self):
         for Lap in self.Laps:
-            print(Lap)    
+            print(Lap)
+
+    def GetMap(self, Id):
+        for Map in self.Maps:
+            if Map[0] == Id:
+                return Map
+        return None
+    
+    def GetPlayer(self, Id):
+        for Player in self.Players:
+            if Player[0] == Id:
+                return Player
+        return None
+    
+    def GetLap(self, Id):
+        for Lap in self.Laps:
+            if Lap[0] == Id:
+                return Lap
+        return None

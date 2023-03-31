@@ -14,8 +14,7 @@ def openNewCircuit():
     frm.grid()
     ttk.Label(frm, text="Circuit Name").grid(column=0, row=0)
     nameBox = ttk.Entry(newCircuitWindow).grid(column=0,row=1)
-    text = nameBox.get()
-    ttk.Button(frm, text="Submit", command=manager.AddMap(text)).grid(column=0, row=2)
+    ttk.Button(frm, text="Submit", command=manager.AddMap("ZOLDER")).grid(column=0, row=2)
 
 def openNewPlayer():
     newPlayerWindow = Tk()

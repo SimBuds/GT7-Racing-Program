@@ -1,42 +1,199 @@
-import Manager
+from manager import Manager
+from tkinter import *
+from tkinter import messagebox
 
-def run():
-    while True:
-        
-        print("1. Add Map")
-        print("2. Add Player")
-        print("3. Add Lap")
-        print("4. Show Map")
-        print("5. Show Player")
-        print("6. Show Lap")
-        print("7. Show All")
-        print("8. Exit")
+manager = Manager()
+manager.CreateDB()
 
-        Input = input("Enter your choice: ")
+class Main:
+    def __init__(self, master):
+        self.master = master
+        self.master.title("GT7 Lap Time Tracker")
+        self.master.geometry("300x300")
+        self.master.resizable(False, False)
+        self.frame = Frame(self.master)
+        self.frame.pack()
+        self.btn1 = Button(self.frame, text="Add", width=10, height=2, command=self.add)
+        self.btn1.grid(row=0, column=0, padx=5, pady=5)
+        self.btn2 = Button(self.frame, text="Remove", width=10, height=2, command=self.remove)
+        self.btn2.grid(row=0, column=1, padx=5, pady=5)
+        self.btn3 = Button(self.frame, text="Search", width=10, height=2, command=self.search)
+        self.btn3.grid(row=0, column=2, padx=5, pady=5)
+        self.btn4 = Button(self.frame, text="Show All", width=10, height=2, command=self.show_all)
+        self.btn4.grid(row=1, column=0, padx=5, pady=5)
+        self.btn5 = Button(self.frame, text="Exit", width=10, height=2, command=self.exit)
+        self.btn5.grid(row=1, column=1, columnspan=2, padx=5, pady=5)
 
-        if Input == "1":
-            MapName = input("Enter Map Name: ")
-            manager.AddMap(MapName)
-        elif Input == "2":
-            PlayerName = input("Enter Player Name: ")
-            manager.AddPlayer(PlayerName)
-        elif Input == "3":
-            MapId = input("Enter Map Id: ")
-            LapTime = input("Enter Lap Time: ")
-            PlayerId = input("Enter Player Id: ")
-            manager.AddLap(MapId, LapTime, PlayerId)
-        elif Input == "4":
-            MapId = input("Enter Map Id: ")
-            manager.GetMap(MapId)
-        elif Input == "5":
-            PlayerId = input("Enter Player Id: ")
-            manager.GetPlayer(PlayerId)
-        elif Input == "6":
-            LapId = input("Enter Lap Id: ")
-            manager.GetLap(LapId)
-        elif Input == "7":
-            manager.ShowAllMaps()
-        elif Input == "8":
-            break
+    def add(self):
+        self.newWindow = Toplevel(self.master)
+        self.app = Add(self.newWindow)
+
+    def remove(self):
+        self.newWindow = Toplevel(self.master)
+        self.app = Remove(self.newWindow)
+
+    def search(self):
+        self.newWindow = Toplevel(self.master)
+        self.app = Search(self.newWindow)
+
+    def show_all(self):
+        self.newWindow = Toplevel(self.master)
+        self.app = DisplayResults(self.newWindow)
+
+    def exit(self):
+        self.master.destroy()
+
+class Add:
+    def __init__(self, master):
+        self.master = master
+        self.master.title("Add A Lap")
+        self.master.geometry("300x300")
+        self.master.resizable(False, False)
+        self.frame = Frame(self.master)
+        self.frame.pack()
+        self.lbl1 = Label(self.frame, text="Name")
+        self.lbl1.grid(row=0, column=0, padx=5, pady=5)
+        self.ent1 = Entry(self.frame, width=20)
+        self.ent1.grid(row=0, column=1, padx=5, pady=5)
+        self.lbl2 = Label(self.frame, text="Map")
+        self.lbl2.grid(row=1, column=0, padx=5, pady=5)
+        self.ent2 = Entry(self.frame, width=20)
+        self.ent2.grid(row=1, column=1, padx=5, pady=5)
+        self.lbl3 = Label(self.frame, text="Lap Time")
+        self.lbl3.grid(row=2, column=0, padx=5, pady=5)
+        self.ent3 = Entry(self.frame, width=20)
+        self.ent3.grid(row=2, column=1, padx=5, pady=5)
+        self.btn1 = Button(self.frame, text="Add", width=10, height=2, command=self.add)
+        self.btn1.grid(row=3, column=0, columnspan=2, padx=5, pady=5)
+
+    def add(self):
+        if self.ent1.get() == "" or self.ent2.get() == "" or self.ent3.get() == "":
+            messagebox.showerror("Error", "Please fill all the fields")
         else:
-            print("Invalid Input")
+            manager.AddLap(self.ent1.get(), self.ent2.get(), self.ent3.get())
+            messagebox.showinfo("Success", "Lap added successfully")
+            self.master.destroy()
+
+class Remove:
+    def __init__(self, master):
+        self.master = master
+        self.master.title("Remove A Lap")
+        self.master.geometry("300x300")
+        self.master.resizable(False, False)
+        self.frame = Frame(self.master)
+        self.frame.pack()
+        self.lbl1 = Label(self.frame, text="Name")
+        self.lbl1.grid(row=0, column=0, padx=5, pady=5)
+        self.ent1 = Entry(self.frame, width=20)
+        self.ent1.grid(row=0, column=1, padx=5, pady=5)
+        self.lbl2 = Label(self.frame, text="Map")
+        self.lbl2.grid(row=1, column=0, padx=5, pady=5)
+        self.ent2 = Entry(self.frame, width=20)
+        self.ent2.grid(row=1, column=1, padx=5, pady=5)
+        self.lbl3 = Label(self.frame, text="Lap Time")
+        self.lbl3.grid(row=2, column=0, padx=5, pady=5)
+        self.ent3 = Entry(self.frame, width=20)
+        self.ent3.grid(row=2, column=1, padx=5, pady=5)
+        self.btn1 = Button(self.frame, text="Remove", width=10, height=2, command=self.remove)
+        self.btn1.grid(row=3, column=0, columnspan=2, padx=5, pady=5)
+
+    def remove(self):
+        if self.ent1.get() == "" or self.ent2.get() == "" or self.ent3.get() == "":
+            messagebox.showerror("Error", "Please fill all the fields")
+        else:
+            manager.RemoveLap(self.ent1.get(), self.ent2.get(), self.ent3.get())
+            messagebox.showinfo("Success", "Lap removed successfully")
+            self.master.destroy()
+
+class Search:
+    def __init__(self, master):
+        self.master = master
+        self.master.title("Search For a Lap")
+        self.master.geometry("300x300")
+        self.master.resizable(False, False)
+        self.frame = Frame(self.master)
+        self.frame.pack()
+        self.lbl1 = Label(self.frame, text="Name")
+        self.lbl1.grid(row=0, column=0, padx=5, pady=5)
+        self.ent1 = Entry(self.frame, width=20)
+        self.ent1.grid(row=0, column=1, padx=5, pady=5)
+        self.lbl2 = Label(self.frame, text="Map")
+        self.lbl2.grid(row=1, column=0, padx=5, pady=5)
+        self.ent2 = Entry(self.frame, width=20)
+        self.ent2.grid(row=1, column=1, padx=5, pady=5)
+        self.btn1 = Button(self.frame, text="Search", width=10, height=2, command=self.search)
+        self.btn1.grid(row=2, column=0, columnspan=2, padx=5, pady=5)
+
+    def search(self):
+        if self.ent1.get() == "" or self.ent2.get() == "":
+            messagebox.showerror("Error", "Please fill all the fields")
+        else:
+            self.newWindow = Toplevel(self.master)
+            self.app = SearchResults(self.newWindow, self.ent1.get(), self.ent2.get())
+
+class SearchResults:
+    def __init__(self, master, name, map):
+        self.master = master
+        self.master.title("Search Results")
+        self.master.geometry("300x300")
+        self.master.resizable(False, False)
+        self.frame = Frame(self.master)
+        self.frame.pack()
+        self.lbl1 = Label(self.frame, text="Name")
+        self.lbl1.grid(row=0, column=0, padx=5, pady=5)
+        self.lbl2 = Label(self.frame, text="Map")
+        self.lbl2.grid(row=0, column=1, padx=5, pady=5)
+        self.lbl3 = Label(self.frame, text="Lap Time")
+        self.lbl3.grid(row=0, column=2, padx=5, pady=5)
+        self.lbl4 = Label(self.frame, text=name)
+        self.lbl4.grid(row=1, column=0, padx=5, pady=5)
+        self.lbl5 = Label(self.frame, text=map)
+        self.lbl5.grid(row=1, column=1, padx=5, pady=5)
+        self.lbl6 = Label(self.frame, text=manager.SearchLap(name, map))
+        self.lbl6.grid(row=1, column=2, padx=5, pady=5)
+
+class Display:
+    def __init__(self, master):
+        self.master = master
+        self.master.title("Display")
+        self.master.geometry("300x300")
+        self.master.resizable(False, False)
+        self.frame = Frame(self.master)
+        self.frame.pack()
+        self.lbl1 = Label(self.frame, text="Name")
+        self.lbl1.grid(row=0, column=0, padx=5, pady=5)
+        self.ent1 = Entry(self.frame, width=20)
+        self.ent1.grid(row=0, column=1, padx=5, pady=5)
+        self.btn1 = Button(self.frame, text="Display", width=10, height=2, command=self.display)
+        self.btn1.grid(row=1, column=0, columnspan=2, padx=5, pady=5)
+
+    def display(self):
+        if self.ent1.get() == "":
+            messagebox.showerror("Error", "Please fill all the fields")
+        else:
+            self.newWindow = Toplevel(self.master)
+            self.app = DisplayResults(self.newWindow, self.ent1.get())
+
+class DisplayResults:
+    def __init__(self, master, name):
+        self.master = master
+        self.master.title("Display Results")
+        self.master.geometry("300x300")
+        self.master.resizable(False, False)
+        self.frame = Frame(self.master)
+        self.frame.pack()
+        self.lbl1 = Label(self.frame, text="Name")
+        self.lbl1.grid(row=0, column=0, padx=5, pady=5)
+        self.lbl2 = Label(self.frame, text="Map")
+        self.lbl2.grid(row=0, column=1, padx=5, pady=5)
+        self.lbl3 = Label(self.frame, text="Lap Time")
+        self.lbl3.grid(row=0, column=2, padx=5, pady=5)
+        self.lbl4 = Label(self.frame, text=name)
+        self.lbl4.grid(row=1, column=0, padx=5, pady=5)
+        self.lbl5 = Label(self.frame, text=manager.DisplayLap(name))
+        self.lbl5.grid(row=1, column=1, padx=5, pady=5)
+
+if __name__ == "__main__":
+    root = Tk()
+    app = Main(root)
+    root.mainloop()

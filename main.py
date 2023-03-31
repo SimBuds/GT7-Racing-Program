@@ -10,7 +10,7 @@ class Main:
         self.master = master
         self.master.title("GT7 Lap Time Tracker")
         self.master.geometry("300x300")
-        self.master.resizable(False, False)
+        self.master.resizable(True, True)
         self.frame = Frame(self.master)
         self.frame.pack()
         self.btn1 = Button(self.frame, text="Add", width=10, height=2, command=self.add)

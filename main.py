@@ -108,13 +108,21 @@ class Remove:
 class Search:
     def __init__(self, master):
         self.master = master
+        # Name of the window
         self.master.title("Search For a Lap")
+        # Size of the window
         self.master.geometry("300x300")
+        # Disable resizing the GUI
         self.master.resizable(False, False)
+        # Create a frame
         self.frame = Frame(self.master)
+        # Pack the frame
         self.frame.pack()
+        # Create a label
         self.lbl1 = Label(self.frame, text="Name")
+        # Place the label
         self.lbl1.grid(row=0, column=0, padx=5, pady=5)
+        # Create an entry
         self.ent1 = Entry(self.frame, width=20)
         self.ent1.grid(row=0, column=1, padx=5, pady=5)
         self.lbl2 = Label(self.frame, text="Map")
@@ -125,10 +133,12 @@ class Search:
         self.btn1.grid(row=2, column=0, columnspan=2, padx=5, pady=5)
 
     def search(self):
+        # Check if the entries are empty
         if self.ent1.get() == "" or self.ent2.get() == "":
             messagebox.showerror("Error", "Please fill all the fields")
         else:
             self.newWindow = Toplevel(self.master)
+            # Sending the entries to the next window that uses .get() to get the values
             self.app = SearchResults(self.newWindow, self.ent1.get(), self.ent2.get())
 
 class SearchResults:

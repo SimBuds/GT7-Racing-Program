@@ -1,6 +1,4 @@
-import manager
-
-manager = manager.Manager()
+import Manager
 
 def run():
     while True:

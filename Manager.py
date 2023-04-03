@@ -47,7 +47,7 @@ class Manager:
         players = self.cursor.fetchall()
         for player in players:
             self.players.append(Player(player[0], player[1], player[2], player[3]))
-
+            
     def LoadLaps(self):
         self.cursor.execute("SELECT * FROM Laps")
         laps = self.cursor.fetchall()

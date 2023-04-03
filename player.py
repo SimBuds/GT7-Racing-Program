@@ -5,4 +5,4 @@ class Player:
         self.laps = []
 
     def __str__(self):
-        return f"Id: {self.id}, Name: {self.name}, CarType: {self.carType}, CarNumber: {self.carNumber}"
+        return f"Id: {self.id}, Name: {self.name}, Laps: {self.laps}"

@@ -3,9 +3,9 @@ import player as p
 class Lap:
 
     def __init__(self, id, map, lapTime):
-        self.Id = id
-        self.Map = map
-        self.LapTime = lapTime
+        self.Id = id.int()
+        self.Map = map.toTitle()
+        self.LapTime = lapTime.float()
         self.Player = p.Player
 
     def __str__(self):

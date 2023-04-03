@@ -1,4 +1,4 @@
-from Manager import Manager
+from manager import Manager
 from tkinter import *
 from tkinter import messagebox
 
@@ -203,37 +203,7 @@ class DisplayResults:
         self.lbl5 = Label(self.frame, text=manager.DisplayLap(name))
         self.lbl5.grid(row=1, column=1, padx=5, pady=5)
 
-class MapButtons(tk.Frame):
-    def __init__(self, master=None):
-        super().__init__(master)
-        self.master = master
-        self.pack()
-        self.create_widgets()
-
-    def create_widgets(self):
-        self.map_label = tk.Label(self, text="Choose a map:")
-        self.map_label.pack()
-
-        # Create PhotoImage objects for the maps
-        self.map_images = []
-        self.map_images.append(tk.PhotoImage(file="map2.gif"))
-        self.map_images.append(tk.PhotoImage(file="map2.gif"))
-        self.map_images.append(tk.PhotoImage(file="map3.gif"))
-
-        # Display the maps as clickable images
-        self.map_labels = []
-        for i in range(len(self.map_images)):
-            label = tk.Label(self, image=self.map_images[i])
-            label.bind("<Button-1>", lambda event, index=i: self.on_map_click(index))
-            label.pack()
-            self.map_labels.append(label)
-
-    def on_map_click(self, index):
-        # Call the relevant function from the Manager class to select the map
-        print(f"Map {index+1} selected")
-
-
 if __name__ == "__main__":
     root = Tk()
-    app = Application(master=root)
+    app = Main(master=root)
     app.mainloop()

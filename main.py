@@ -1,4 +1,4 @@
-from manager import Manager
+from Manager import Manager
 from tkinter import *
 from tkinter import messagebox
 
@@ -55,6 +55,7 @@ class Add:
         self.lbl1.grid(row=0, column=0, padx=5, pady=5)
         self.ent1 = Entry(self.frame, width=20)
         self.ent1.grid(row=0, column=1, padx=5, pady=5)
+        self.ent1.get()
         self.lbl2 = Label(self.frame, text="Map")
         self.lbl2.grid(row=1, column=0, padx=5, pady=5)
         self.ent2 = Entry(self.frame, width=20)

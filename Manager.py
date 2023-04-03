@@ -5,12 +5,12 @@ import os as os
 class Manager:
     
     def __init__(self):
-        self.Connection = self.CreateConnection()
-        self.Cursor = self.Connection.cursor()
-        self.Maps = ["Bathurst Mt. panorama", "Monza", "Spa", "Nurburgring", "Suzuka", "Watkins Glen"]
-        self.Players = []
-        self.Laps = []
-        if self.Connection is not None:
+        self.connection = self.CreateConnection()
+        self.cursor = self.connection.cursor()
+        self.maps = ["Bathurst Mt. panorama", "Monza", "Spa", "Nurburgring", "Suzuka", "Watkins Glen"]
+        self.players = []
+        self.laps = []
+        if self.connection is not None:
             self.CreateDB()
             self. LoadPlayers()
             self. LoadLaps()
@@ -19,87 +19,103 @@ class Manager:
 
     def CreateConnection(self):
         try:
-            Connection = sql.connect("Database.db")
-            return Connection
+            connection = sql.connect("RacingManager.db")
+            return connection
         except Error as e:
             print(e)
         return None
     
     def CreateDB(self):
-        if self.Connection is not None:
-            self.Cursor.execute("""CREATE TABLE IF NOT EXISTS Players (
+        if self.connection is not None:
+            self.cursor.execute("""CREATE TABLE IF NOT EXISTS Players (
                                 Id INTEGER PRIMARY KEY AUTOINCREMENT, 
                                 Name TEXT, 
                                 CarType TEXT, 
                                 CarNumber TEXT)""")
-            self.Cursor.execute("""CREATE TABLE IF NOT EXISTS Laps (
+            self.cursor.execute("""CREATE TABLE IF NOT EXISTS Laps (
                                 Id INTEGER PRIMARY KEY AUTOINCREMENT,
                                 Map TEXT,
                                 LapTime TEXT,
                                 PlayerId INTEGER,
                                 FOREIGN KEY(PlayerId) REFERENCES Players(Id))""")
-            self.Connection.commit()
+            self.connection.commit()
         else:
             print("Error: Connection failed")
 
     def LoadPlayers(self):
-        self.Cursor.execute("SELECT * FROM Players")
-        Players = self.Cursor.fetchall()
-        for Player in Players:
-            self.Players.append(Player)
+        self.cursor.execute("SELECT * FROM Players")
+        players = self.cursor.fetchall()
+        for player in players:
+            self.players.append(Player(player[0], player[1], player[2], player[3]))
 
     def LoadLaps(self):
-        self.Cursor.execute("SELECT * FROM Laps")
-        Laps = self.Cursor.fetchall()
-        for Lap in Laps:
-            self.Laps.append(Lap)
+        self.cursor.execute("SELECT * FROM Laps")
+        laps = self.cursor.fetchall()
+        for lap in laps:
+            self.laps.append(Lap(lap[0], lap[1], lap[2], lap[3]))
 
-    def AddPlayer(self, Name, CarType, CarNumber):
-        self.Cursor.execute("INSERT INTO Players (Name, CarType, CarNumber) VALUES (?, ?, ?)", (Name, CarType, CarNumber))
-        self.Connection.commit()
-        self.Players.append((self.Cursor.lastrowid, Name, CarType, CarNumber))
+    def AddPlayer(self, name, carType, carNumber):
+        self.cursor.execute("INSERT INTO Players (Name, CarType, CarNumber) VALUES (?, ?, ?)", (name, carType, carNumber))
+        self.connection.commit()
+        self.players.append(Player(self.cursor.lastrowid, name, carType, carNumber))
 
-    def AddLap(self, Map, LapTime, PlayerId):
-        self.Cursor.execute("INSERT INTO Laps (Map, LapTime, PlayerId) VALUES (?, ?, ?)", (Map, LapTime, PlayerId))
-        self.Connection.commit()
-        self.Laps.append((self.Cursor.lastrowid, Map, LapTime, PlayerId))
+    def AddLap(self, map, lapTime, playerId):
+        self.cursor.execute("INSERT INTO Laps (Map, LapTime, PlayerId) VALUES (?, ?, ?)", (map, lapTime, playerId))
+        self.connection.commit()
+        self.laps.append(Lap(self.cursor.lastrowid, map, lapTime, playerId))
+
+    def GetPlayer(self, id):
+        for player in self.players:
+            if player.id == id:
+                return player
+        return None
     
-    def RemovePlayer(self, Id):
-        self.Cursor.execute("DELETE FROM Players WHERE Id = ?", (Id))
-        self.Connection.commit()
-        for Player in self.Players:
-            if Player[0] == Id:
-                self.Players.remove(Player)
-                break
-
-    def RemoveLap(self, Id, Map, LapTime):
-        self.Cursor.execute("DELETE FROM Laps WHERE Id = ?", (Id))
-        self.Connection.commit()
-        for Lap in self.Laps:
-            if Lap[0] == Id:
-                self.Laps.remove(Lap)
-                break
-
-    def SearchLap(self, Map):
-        for Lap in self.Laps:
-            if Lap[1] == Map:
-                print(Lap)
-                
-    def SearchPlayer(self, Name):
-        for Player in self.Players:
-            if Player[1] == Name:
-                print(Player)
-
-    def DisplayLap(self):
-        for Lap in self.Laps:
-            print(Lap)
+    def GetLaps(self, playerId):
+        laps = []
+        for lap in self.laps:
+            if lap.playerId == playerId:
+                laps.append(lap)
+        return laps
     
-    def DisplayLap(self, Id):
-        for Lap in self.Laps:
-            if Lap[0] == Id:
-                print(Lap)
-
-    def DisplayPlayer(self, Id):
-        for Player in self.Players:
-            if Player[0] == Id:
-                print(Player)
+    def GetBestLap(self, playerId):
+        bestLap = None
+        for lap in self.laps:
+            if lap.playerId == playerId:
+                if bestLap == None:
+                    bestLap = lap
+                elif lap.lapTime < bestLap.lapTime:
+                    bestLap = lap
+        return bestLap
+    
+    def GetBestLapTime(self, playerId):
+        bestLap = self.GetBestLap(playerId)
+        if bestLap != None:
+            return bestLap.lapTime
+        return None
+    
+    def GetBestLapMap(self, playerId):
+        bestLap = self.GetBestLap(playerId)
+        if bestLap != None:
+            return bestLap.map
+        return None
+    
+    def GetAverageLapTime(self, playerId):
+        laps = self.GetLaps(playerId)
+        if len(laps) > 0:
+            total = 0
+            for lap in laps:
+                total += lap.lapTime
+            return total / len(laps)
+        return None
+    
+    def GetAverageLapTimeByMap(self, playerId, map):
+        laps = self.GetLaps(playerId)
+        if len(laps) > 0:
+            total = 0
+            count = 0
+            for lap in laps:
+                if lap.map == map:
+                    total += lap.lapTime
+                    count += 1
+            return total / count
+        return None

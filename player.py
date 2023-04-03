@@ -1,10 +1,8 @@
 class Player:
-    def __init__(self, Id, Name, CarType, CarNumber):
-        self.Id = Id.int()
-        self.Name = Name.str()
-        self.CarType = CarType.str()
-        self.CarNumber = CarNumber.str()
-        self.Laps = []
+    def __init__(self, id, name, carType, carNumber):
+        self.id = id.int()
+        self.name = name.str()
+        self.laps = []
 
     def __str__(self):
-        return f"Id: {self.Id}, Name: {self.Name}, CarType: {self.CarType}, CarNumber: {self.CarNumber}"
+        return f"Id: {self.id}, Name: {self.name}, CarType: {self.carType}, CarNumber: {self.carNumber}"

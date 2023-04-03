@@ -1,8 +1,8 @@
 import sqlite3 as sql
 from sqlite3 import Error
 import os as os
-import lap as Lap
 import player as Player
+import lap as Lap
 
 class Manager:
     
@@ -38,28 +38,32 @@ class Manager:
                                 carType TEXT,
                                 lapTime REAL,
                                 playerId INTEGER NOT NULL REFERENCES Players(id))""")
+            self.connection.commit()
+        else:
+            print("Error: Connection failed")
+
     def LoadPlayers(self):
         self.cursor.execute("SELECT * FROM Players")
         players = self.cursor.fetchall()
         for player in players:
-            self.players.append(Player(player[0], player[1]))
+            self.players.append(Player.Player(player[0], player[1]))
     
     def LoadLaps(self):
         self.cursor.execute("SELECT * FROM Laps")
         laps = self.cursor.fetchall()
         for lap in laps:
-            self.laps.append(Lap(lap[0], lap[1], lap[2], lap[3], lap[4]))
+            self.laps.append(Lap.Lap(lap[0], lap[1], lap[2], lap[3], lap[4]))
 
     #Add lap to database while creating a user if they don't exist
     def AddPlayer(self, name):
         player = self.GetPlayer(name)
         if player is None:
-            self.cursor.execute("INSERT INTO Players (name) VALUES (?)", (name,))
+            self.cursor.execute("INSERT INTO Players (name) VALUES (?)", (name))
             self.connection.commit()
-            player_id = self.cursor.lastrowid
-            new_player = Player(player_id, name)
-            self.players.append(new_player)
-            return new_player
+            playerId = self.cursor.lastrowid
+            newPlayer = Player(playerId, name)
+            self.players.append(newPlayer)
+            return newPlayer
         else:
             return player
 
@@ -71,12 +75,15 @@ class Manager:
 
     def AddLap(self, map, carType, lapTime, playerName):
         player = self.AddPlayer(playerName)
-        self.cursor.execute("INSERT INTO Laps (map, carType, lapTime, playerId) VALUES (?, ?, ?, ?)", (map, carType, lapTime, player.id))
-        self.connection.commit()
-        lap_id = self.cursor.lastrowid
-        new_lap = Lap(lap_id, map, carType, lapTime, player.id)
-        self.laps.append(new_lap)
-        return new_lap
+        if player is not None:
+            self.cursor.execute("INSERT INTO Laps (map, carType, lapTime, playerId) VALUES (?, ?, ?, ?)", (map, carType, lapTime, player.id))
+            self.connection.commit()
+            lapId = self.cursor.lastrowid
+            newLap = Lap(lapId, map, carType, lapTime, player.id)
+            self.laps.append(newLap)
+            return newLap
+        else:
+            return None
 
     #View laps for a specific map
     def ViewLaps(self, map):

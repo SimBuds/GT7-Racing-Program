@@ -34,7 +34,7 @@ class Application:
         if mapChoice == "1":
             mapChoice = "Bathurst Mt. panorama"
         elif mapChoice == "2":
-            mapChoice = "Monza"
+            mapChoice = "Monza"     
         elif mapChoice == "3":
             mapChoice = "Spa"
         elif mapChoice == "4":

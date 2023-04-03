@@ -1,6 +1,8 @@
 import sqlite3 as sql
 from sqlite3 import Error
 import os as os
+import lap as Lap
+import player as Player
 
 class Manager:
     
@@ -49,15 +51,32 @@ class Manager:
             self.laps.append(Lap(lap[0], lap[1], lap[2], lap[3], lap[4]))
 
     #Add lap to database while creating a user if they don't exist
-    def AddLap(self, map, carType, lapTime, playerName):
-        player = self.GetPlayer(playerName)
+    def AddPlayer(self, name):
+        player = self.GetPlayer(name)
         if player is None:
-            self.AddPlayer(playerName)
-            player = self.GetPlayer(playerName)
-        lap = Lap(map, carType, lapTime, player.id)
-        self.laps.append(lap)
-        self.cursor.execute("INSERT INTO Laps (map, carType, lapTime, playerId) VALUES (?, ?, ?, ?)", (lap.map, lap.carType, lap.lapTime, lap.playerId))
+            self.cursor.execute("INSERT INTO Players (name) VALUES (?)", (name,))
+            self.connection.commit()
+            player_id = self.cursor.lastrowid
+            new_player = Player(player_id, name)
+            self.players.append(new_player)
+            return new_player
+        else:
+            return player
+
+    def GetPlayer(self, name):
+        for player in self.players:
+            if player.name == name:
+                return player
+        return None
+
+    def AddLap(self, map, carType, lapTime, playerName):
+        player = self.AddPlayer(playerName)
+        self.cursor.execute("INSERT INTO Laps (map, carType, lapTime, playerId) VALUES (?, ?, ?, ?)", (map, carType, lapTime, player.id))
         self.connection.commit()
+        lap_id = self.cursor.lastrowid
+        new_lap = Lap(lap_id, map, carType, lapTime, player.id)
+        self.laps.append(new_lap)
+        return new_lap
 
     #View laps for a specific map
     def ViewLaps(self, map):

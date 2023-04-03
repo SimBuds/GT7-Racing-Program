@@ -53,25 +53,24 @@ class Add:
         self.frame.pack()
         self.lbl1 = Label(self.frame, text="Name")
         self.lbl1.grid(row=0, column=0, padx=5, pady=5)
-        self.ent1 = Entry(self.frame, width=20)
-        self.ent1.grid(row=0, column=1, padx=5, pady=5)
-        self.ent1.get()
+        self.entName = Entry(self.frame, width=20)
+        self.entName.grid(row=0, column=1, padx=5, pady=5)
         self.lbl2 = Label(self.frame, text="Map")
         self.lbl2.grid(row=1, column=0, padx=5, pady=5)
-        self.ent2 = Entry(self.frame, width=20)
-        self.ent2.grid(row=1, column=1, padx=5, pady=5)
+        self.entMap = Entry(self.frame, width=20)
+        self.entMap.grid(row=1, column=1, padx=5, pady=5)
         self.lbl3 = Label(self.frame, text="Lap Time")
         self.lbl3.grid(row=2, column=0, padx=5, pady=5)
-        self.ent3 = Entry(self.frame, width=20)
-        self.ent3.grid(row=2, column=1, padx=5, pady=5)
+        self.entTime = Entry(self.frame, width=20)
+        self.entTime.grid(row=2, column=1, padx=5, pady=5)
         self.btn1 = Button(self.frame, text="Add", width=10, height=2, command=self.add)
         self.btn1.grid(row=3, column=0, columnspan=2, padx=5, pady=5)
 
     def add(self):
-        if self.ent1.get() == "" or self.ent2.get() == "" or self.ent3.get() == "":
+        if self.entName.get() == "" or self.entMap.get() == "" or self.ent3.get() == "":
             messagebox.showerror("Error", "Please fill all the fields")
         else:
-            manager.AddLap(self.ent1.get(), self.ent2.get(), self.ent3.get())
+            manager.AddLap(self.ent1.get(), self.entMap.get(), self.ent3.get())
             messagebox.showinfo("Success", "Lap added successfully")
             self.master.destroy()
 

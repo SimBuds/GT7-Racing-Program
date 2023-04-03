@@ -10,8 +10,8 @@ class Application:
         while not self.exit:
             print("Main Menu")
             print("1. Add Lap")
-            print("3. View Laps")
-            print("4. Exit")
+            print("2. View Laps")
+            print("3. Exit")
             choice = input("Enter your choice: ")
             if choice == "1":
                 self.addLap()
@@ -48,7 +48,8 @@ class Application:
             return
         carType = input("Enter the car type: ")
         lapTime = input("Enter the lap time: ")
-        self.manager.AddLap(mapChoice, carType, lapTime)
+        playerName = input("Enter your name: ")
+        self.manager.AddLap(mapChoice, carType, lapTime, playerName)
 
     def viewLaps(self):
         print("View Laps")

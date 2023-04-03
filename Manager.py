@@ -58,14 +58,15 @@ class Manager:
     def AddPlayer(self, name):
         player = self.GetPlayer(name)
         if player is None:
-            self.cursor.execute("INSERT INTO Players (name) VALUES (?)", (name))
+            self.cursor.execute("INSERT INTO Players (name) VALUES (?)", (name,))
             self.connection.commit()
             playerId = self.cursor.lastrowid
             newPlayer = Player(playerId, name)
-            self.players.append(newPlayer)
+            self.players.append(newPlayer) 
             return newPlayer
         else:
             return player
+
 
     def GetPlayer(self, name):
         for player in self.players:

@@ -65,11 +65,20 @@ class Manager:
         else:
             return player.id
 
-    def GetPlayers(self):
-        players = []
+    def GetPlayer(self, name):
         for player in self.players:
-            players.append(player.name)
-        return players
+            if player.name == name:
+                return player
+        return None
+    
+    def GetAllPlayers(self):
+        return self.players
+    
+    def GetLap(self, lapId):
+        for lap in self.laps:
+            if lap.id == lapId:
+                return lap
+        return None
 
     def AddLap(self, map, carType, lapTime, playerName):
         playerId = self.AddPlayer(playerName)
@@ -80,12 +89,6 @@ class Manager:
         lap = Lap(lapId, map, carType, lapTime, playerId)
         self.laps.append(lap)
         return True
-
-    def ViewPlayers(self):
-        players = []
-        for player in self.players:
-            players.append(player.name)
-        return players
 
     def GetBestLap(self, map):
         bestLap = None

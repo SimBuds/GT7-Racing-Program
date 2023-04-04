@@ -85,27 +85,18 @@ class Main(tk.Frame):
         self.addLapWindow.destroy()
 
     def ViewAllPlayers(self):
-        self.viewAllPlayersWindow = tk.Toplevel(self.master)
-        self.viewAllPlayersWindow.title("All Players")
-        self.viewAllPlayersWindow.geometry("200x250")
-        self.viewAllPlayersWindow.resizable(False, False)
-        self.viewAllPlayersFrame = tk.Frame(self.viewAllPlayersWindow)
-        self.viewAllPlayersFrame.grid()
+        self.viewPlayersWindow = tk.Toplevel(self.master)
+        self.viewPlayersWindow.title("Players")
+        self.viewPlayersWindow.geometry("250x250")
+        self.viewPlayersWindow.resizable(False, False)
+        self.viewPlayersFrame = tk.Frame(self.viewPlayersWindow)
+        self.viewPlayersFrame.grid()
 
-        self.players = manager.GetPlayers()
+        players = manager.GetAllPlayers()
 
-        self.playerList = tk.Listbox(self.viewAllPlayersFrame, width=50, height=10)
-        self.playerList.grid(row=0, column=0, columnspan=2, pady=10)
-        for player in self.players:
-            self.playerList.insert(tk.END, player)
-
-        self.playerList.bind("<<ListboxSelect>>", self.onPlayerSelect)
-
-        self.playerLapsLabel = tk.Label(self.viewAllPlayersFrame, text="Player Laps:")
-        self.playerLapsLabel.grid(row=1, column=0, columnspan=2, pady=10)
-
-        self.playerLaps = tk.Listbox(self.viewAllPlayersFrame, width=50, height=10)
-        self.playerLaps.grid(row=2, column=0, columnspan=2, pady=10)
+        for index, player in enumerate(players):
+            playerLabel = tk.Label(self.viewPlayersFrame, text=player)
+            playerLabel.grid(row=index, column=0, padx=50)
 
 
 if __name__ == "__main__":

@@ -1,24 +1,23 @@
 import tkinter as tk
 from tkinter import ttk
-from db import Manager  # Changed the import statement
+from db import Manager
 
 manager = Manager()
-manager.CreateDB()
 
-class Main(tk.Frame):  # Main should inherit from tk.Frame
+class Main(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
         self.master = master
-        self.master.title("Grand Turismo 7 Lap Time Tracker")
-        self.master.geometry("400x430")
+        self.master.title("Lap Time Tracker")
+        self.master.geometry("405x420")
         self.master.resizable(False, False)
         self.grid()
 
         self.lbl1 = tk.Label(self, text="Grand Turismo 7 Lap Time Tracker")
-        self.lbl1.grid(row=0, column=0, columnspan=2, pady=10)
+        self.lbl1.grid(row=0, column=0, columnspan=10, pady=10)
         
-        self.mapLabel = tk.Label(self, text="Choose a map:")
-        self.mapLabel.grid(row=1, column=0, columnspan=2, pady=10)
+        self.mapLabel = tk.Label(self, text="Choose a map to record your lap time:")
+        self.mapLabel.grid(row=1, column=0, columnspan=10, pady=10)
 
         # Create PhotoImage objects for the maps
         self.mapImages = []
@@ -39,7 +38,6 @@ class Main(tk.Frame):  # Main should inherit from tk.Frame
 
         # Create a label to display the selected map
         self.selectedMapLabel = tk.Label(self, text="No map selected")
-        self.selectedMapLabel.grid(row=4, column=0, columnspan=2, pady=10)
 
     def onMapClick(self, index):
         self.selectedMapLabel.config(text=manager.maps[index])
@@ -48,43 +46,39 @@ class Main(tk.Frame):  # Main should inherit from tk.Frame
     def addLap(self):
         self.addLapWindow = tk.Toplevel(self.master)
         self.addLapWindow.title("Add Lap")
-        self.addLapWindow.geometry("300x300")
+        self.addLapWindow.geometry("200x250")
         self.addLapWindow.resizable(False, False)
-
         self.addLapFrame = tk.Frame(self.addLapWindow)
         self.addLapFrame.grid()
 
-        self.addLapLabel = tk.Label(self.addLapFrame, text=f"Add a Lap for {self.selectedMapLabel.cget('text')}")
-        self.addLapLabel.grid(row=0, column=0, columnspan=2, pady=10)
-
         averageLap = manager.GetAverageLap(self.selectedMapLabel.cget("text"))
         self.averageLabel = tk.Label(self.addLapFrame, text=f"Average Lap Time: {averageLap if averageLap is not None else 'N/A'}")
-        self.averageLabel.grid(row=1, column=0, columnspan=2, pady=10)
+        self.averageLabel.grid(row=0, column=0, columnspan=2, pady=10)
 
         bestLap = manager.GetBestLap(self.selectedMapLabel.cget("text"))
         self.bestLabel = tk.Label(self.addLapFrame, text=f"Best Lap Time: {bestLap if bestLap is not None else 'N/A'}")
-        self.bestLabel.grid(row=2, column=0, columnspan=2, pady=10)
+        self.bestLabel.grid(row=1, column=0, columnspan=2, pady=10)
 
         self.carLabel = tk.Label(self.addLapFrame, text="Car:")
-        self.carLabel.grid(row=3, column=0, pady=10)
+        self.carLabel.grid(row=2, column=0, pady=10)
 
         self.carEntry = tk.Entry(self.addLapFrame)
-        self.carEntry.grid(row=3, column=1, pady=10)
+        self.carEntry.grid(row=2, column=1, pady=10)
 
         self.timeLabel = tk.Label(self.addLapFrame, text="Lap Time:")
-        self.timeLabel.grid(row=4, column=0, pady=10)
+        self.timeLabel.grid(row=3, column=0, pady=10)
 
         self.timeEntry = tk.Entry(self.addLapFrame)
-        self.timeEntry.grid(row=4, column=1, pady=10)
+        self.timeEntry.grid(row=3, column=1, pady=10)
 
         self.playerLabel = tk.Label(self.addLapFrame, text="Player:")
-        self.playerLabel.grid(row=5, column=0, pady=10)
+        self.playerLabel.grid(row=4, column=0, pady=10)
 
         self.playerEntry = tk.Entry(self.addLapFrame)
-        self.playerEntry.grid(row=5, column=1, pady=10)
+        self.playerEntry.grid(row=4, column=1, pady=10)
 
         self.addLapButton = tk.Button(self.addLapFrame, text="Add Lap", command=self.addLapToDB)
-        self.addLapButton.grid(row=6, column=0, columnspan=2, pady=10)
+        self.addLapButton.grid(row=5, column=0, columnspan=2, pady=10)
 
     def addLapToDB(self):
         manager.AddLap(self.selectedMapLabel.cget("text"), self.carEntry.get(), self.timeEntry.get(), self.playerEntry.get())

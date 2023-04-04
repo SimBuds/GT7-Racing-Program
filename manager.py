@@ -46,12 +46,6 @@ class Manager:
         players = self.cursor.fetchall()
         for player in players:
             self.players.append(Player(player[0], player[1]))
-    
-    def LoadLaps(self):
-        self.cursor.execute("SELECT * FROM Laps")
-        laps = self.cursor.fetchall()
-        for lap in laps:
-            self.laps.append(Lap(lap[0], lap[1], lap[2], lap[3], lap[4]))
 
     def AddPlayer(self, name):
         player = self.GetPlayer(name)
@@ -73,6 +67,12 @@ class Manager:
     
     def GetAllPlayers(self):
         return self.players
+    
+    def LoadLaps(self):
+        self.cursor.execute("SELECT * FROM Laps")
+        laps = self.cursor.fetchall()
+        for lap in laps:
+            self.laps.append(Lap(lap[0], lap[1], lap[2], lap[3], lap[4]))
     
     def GetLap(self, lapId):
         for lap in self.laps:

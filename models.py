@@ -8,6 +8,7 @@ class Player:
         return f"Id: {self.id}, Name: {self.name}"
     
 class Lap:
+    
     def __init__(self, id, map, carType, lapTime, playerId):
         self.id = id
         self.map = map

@@ -98,7 +98,6 @@ class Main(tk.Frame):
             playerLabel = tk.Label(self.viewPlayersFrame, text=player)
             playerLabel.grid(row=index, column=0, padx=50)
 
-
 if __name__ == "__main__":
     root = tk.Tk()
     app = Main(root)

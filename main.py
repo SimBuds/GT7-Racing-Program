@@ -17,8 +17,6 @@ class ConsoleApplication:
             print("6. View Specific Map's Best Lap")
             print("7. View Specific Map's Average Lap")
             print("8. Exit")
-            
-
             choice = input("Enter your choice: ")
             if choice == "1":
                 self.addLap()

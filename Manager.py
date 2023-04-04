@@ -1,8 +1,8 @@
 import sqlite3 as sql
 from sqlite3 import Error
 import os as os
-import player as Player
-import lap as Lap
+from player import Player
+from lap import Lap
 
 class Manager:
     
@@ -46,13 +46,13 @@ class Manager:
         self.cursor.execute("SELECT * FROM Players")
         players = self.cursor.fetchall()
         for player in players:
-            self.players.append(Player.Player(player[0], player[1]))
+            self.players.append(Player(player[0], player[1]))
     
     def LoadLaps(self):
         self.cursor.execute("SELECT * FROM Laps")
         laps = self.cursor.fetchall()
         for lap in laps:
-            self.laps.append(Lap.Lap(lap[0], lap[1], lap[2], lap[3], lap[4]))
+            self.laps.append(Lap(lap[0], lap[1], lap[2], lap[3], lap[4]))
 
     #Add lap to database while creating a user if they don't exist
     def AddPlayer(self, name):
@@ -61,12 +61,11 @@ class Manager:
             self.cursor.execute("INSERT INTO Players (name) VALUES (?)", (name,))
             self.connection.commit()
             playerId = self.cursor.lastrowid
-            newPlayer = Player(playerId, name)
-            self.players.append(newPlayer) 
-            return newPlayer
-        else:
+            player = Player(playerId, name)
+            self.players.append(player)
             return player
-
+        else:
+            return player.id
 
     def GetPlayer(self, name):
         for player in self.players:
@@ -75,16 +74,16 @@ class Manager:
         return None
 
     def AddLap(self, map, carType, lapTime, playerName):
-        player = self.AddPlayer(playerName)
-        if player is not None:
-            self.cursor.execute("INSERT INTO Laps (map, carType, lapTime, playerId) VALUES (?, ?, ?, ?)", (map, carType, lapTime, player.id))
+        playerId = self.AddPlayer(playerName)
+        if playerId is not None:
+            self.cursor.execute("INSERT INTO Laps (map, carType, lapTime, playerId) VALUES (?, ?, ?, ?)", (map, carType, lapTime, playerId))
             self.connection.commit()
             lapId = self.cursor.lastrowid
-            newLap = Lap(lapId, map, carType, lapTime, player.id)
+            newLap = Lap(lapId, map, carType, lapTime, playerId)
             self.laps.append(newLap)
-            return newLap
+            return True
         else:
-            return None
+            return False
 
     #View laps for a specific map
     def ViewLaps(self, map):

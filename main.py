@@ -49,7 +49,10 @@ class Application:
         carType = input("Enter the car type: ")
         lapTime = input("Enter the lap time: ")
         playerName = input("Enter your name: ")
-        self.manager.AddLap(mapChoice, carType, lapTime, playerName)
+        if self.manager.AddLap(mapChoice, carType, lapTime, playerName) == True:
+            print("Lap added successfully")
+        else:
+            print("Error: Lap not added")
 
     def viewLaps(self):
         print("View Laps")

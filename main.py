@@ -1,10 +1,10 @@
 import tkinter as tk
-from tkinter import ttk
 from manager import Manager
 
 manager = Manager()
 
 class Main(tk.Frame):
+
     def __init__(self, master):
         super().__init__(master)
         self.master = master

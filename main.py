@@ -1,151 +1,97 @@
-import manager as m
+import tkinter as tk
+from tkinter import ttk
+from manager import Manager  # Changed the import statement
 
-class ConsoleApplication:
-    def __init__(self):
-        self.manager = m.Manager()
-        self.exit = False
-        self.mainMenu()
+manager = Manager()
+manager.CreateDB()
 
-    def mainMenu(self):
-        while not self.exit:
-            print("Main Menu")
-            print("1. Add Lap")
-            print("2. View Laps")
-            print("3. View All Laps")
-            print("4. View All Players")
-            print("5. View Player Laps")
-            print("6. View Specific Map's Best Lap")
-            print("7. View Specific Map's Average Lap")
-            print("8. Exit")
-            choice = input("Enter your choice: ")
-            if choice == "1":
-                self.addLap()
-            elif choice == "2":
-                self.viewLaps()
-            elif choice == "3":
-                self.manager.ViewAllLaps()
-            elif choice == "4":
-                self.manager.ViewAllPlayers()
-            elif choice == "5":
-                playerName = input("Enter the player name: ")
-                self.manager.ViewPlayerLaps(playerName)
-            elif choice == "6":
-                mapChoice = input("Enter the map: ")
-                self.manager.ViewBestLap(mapChoice)
-            elif choice == "7":
-                mapChoice = input("Enter the map: ")
-                self.manager.ViewAverageLap(mapChoice)
-            elif choice == "8":
-                self.exit = True                
-            else:
-                print("Invalid choice. Try again.")
+class Main(tk.Frame):  # Main should inherit from tk.Frame
+    def __init__(self, master):
+        super().__init__(master)
+        self.master = master
+        self.master.title("Grand Turismo 7 Lap Time Tracker")
+        self.master.geometry("400x430")
+        self.master.resizable(False, False)
+        self.grid()
+
+        self.lbl1 = tk.Label(self, text="Grand Turismo 7 Lap Time Tracker")
+        self.lbl1.grid(row=0, column=0, columnspan=2, pady=10)
+        
+        self.mapLabel = tk.Label(self, text="Choose a map:")
+        self.mapLabel.grid(row=1, column=0, columnspan=2, pady=10)
+
+        # Create PhotoImage objects for the maps
+        self.mapImages = []
+        self.mapImages.append(tk.PhotoImage(file="maps/bathurst.png"))
+        self.mapImages.append(tk.PhotoImage(file="maps/monza.png"))
+        self.mapImages.append(tk.PhotoImage(file="maps/spa.png"))
+        self.mapImages.append(tk.PhotoImage(file="maps/nurburgring.png"))
+        self.mapImages.append(tk.PhotoImage(file="maps/suzuka.png"))
+        self.mapImages.append(tk.PhotoImage(file="maps/watkins_glenn.png"))
+
+        # Display the maps as clickable images
+        self.mapLabels = []
+        for i in range(len(self.mapImages)):
+            label = tk.Label(self, image=self.mapImages[i])
+            label.bind("<Button-1>", lambda event, index=i: self.onMapClick(index))
+            label.grid(row = i // 2 + 2, column = i % 2)
+            self.mapLabels.append(label)
+
+        # Create a label to display the selected map
+        self.selectedMapLabel = tk.Label(self, text="No map selected")
+        self.selectedMapLabel.grid(row=4, column=0, columnspan=2, pady=10)
+
+    def onMapClick(self, index):
+        self.selectedMapLabel.config(text=manager.maps[index])
+        self.addLap()
 
     def addLap(self):
-        print("Add Lap")
-        print("1. Bathurst Mt. panorama")
-        print("2. Monza")
-        print("3. Spa")
-        print("4. Nurburgring")
-        print("5. Suzuka")
-        print("6. Watkins Glen")
-        mapChoice = input("Enter the number of the map: ")
-        if mapChoice == "1":
-            mapChoice = "Bathurst Mt. panorama"
-        elif mapChoice == "2":
-            mapChoice = "Monza"     
-        elif mapChoice == "3":
-            mapChoice = "Spa"
-        elif mapChoice == "4":
-            mapChoice = "Nurburgring"
-        elif mapChoice == "5":
-            mapChoice = "Suzuka"
-        elif mapChoice == "6":
-            mapChoice = "Watkins Glen"
-        else:
-            print("Invalid choice. Try again.")
-            return
-        carType = input("Enter the car type: ")
-        lapTime = input("Enter the lap time: ")
-        playerName = input("Enter your name: ")
-        self.manager.AddLap(mapChoice, carType, lapTime, playerName)
+        self.addLapWindow = tk.Toplevel(self.master)
+        self.addLapWindow.title("Add Lap")
+        self.addLapWindow.geometry("300x300")
+        self.addLapWindow.resizable(False, False)
 
-    def viewLaps(self):
-        print("View Laps")
-        print("1. Bathurst Mt. panorama")
-        print("2. Monza")
-        print("3. Spa")
-        print("4. Nurburgring")
-        print("5. Suzuka")
-        print("6. Watkins Glen")
-        mapChoice = input("Enter the number of the map: ")
-        if mapChoice == "1":
-            mapChoice = "Bathurst Mt. panorama"
-        elif mapChoice == "2":
-            mapChoice = "Monza"
-        elif mapChoice == "3":
-            mapChoice = "Spa"
-        elif mapChoice == "4":
-            mapChoice = "Nurburgring"
-        elif mapChoice == "5":
-            mapChoice = "Suzuka"
-        elif mapChoice == "6":
-            mapChoice = "Watkins Glen"
-        else:
-            print("Invalid choice. Try again.")
-            return
-        self.manager.ViewLaps(mapChoice)
+        self.addLapFrame = tk.Frame(self.addLapWindow)
+        self.addLapFrame.grid()
 
-    def viewSpecificMapBestLap(self):
-        print("View Specific Map's Best Lap")
-        print("1. Bathurst Mt. panorama")
-        print("2. Monza")
-        print("3. Spa")
-        print("4. Nurburgring")
-        print("5. Suzuka")
-        print("6. Watkins Glen")
-        mapChoice = input("Enter the number of the map: ")
-        if mapChoice == "1":
-            mapChoice = "Bathurst Mt. panorama"
-        elif mapChoice == "2":
-            mapChoice = "Monza"
-        elif mapChoice == "3":
-            mapChoice = "Spa"
-        elif mapChoice == "4":
-            mapChoice = "Nurburgring"
-        elif mapChoice == "5":
-            mapChoice = "Suzuka"
-        elif mapChoice == "6":
-            mapChoice = "Watkins Glen"
-        else:
-            print("Invalid choice. Try again.")
-            return
-        self.manager.ViewBestLap(mapChoice)
+        self.addLapLabel = tk.Label(self.addLapFrame, text=f"Add a Lap for {self.selectedMapLabel.cget('text')}")
+        self.addLapLabel.grid(row=0, column=0, columnspan=2, pady=10)
 
-    def viewSpecificMapAverageLap(self):
-        print("View Specific Map's Average Lap")
-        print("1. Bathurst Mt. panorama")
-        print("2. Monza")
-        print("3. Spa")
-        print("4. Nurburgring")
-        print("5. Suzuka")
-        print("6. Watkins Glen")
-        mapChoice = input("Enter the number of the map: ")
-        if mapChoice == "1":
-            mapChoice = "Bathurst Mt. panorama"
-        elif mapChoice == "2":
-            mapChoice = "Monza"
-        elif mapChoice == "3":
-            mapChoice = "Spa"
-        elif mapChoice == "4":
-            mapChoice = "Nurburgring"
-        elif mapChoice == "5":
-            mapChoice = "Suzuka"
-        elif mapChoice == "6":
-            mapChoice = "Watkins Glen"
-        else:
-            print("Invalid choice. Try again.")
-            return
-        self.manager.ViewAverageLapTime(mapChoice)
+        averageLap = manager.GetAverageLap(self.selectedMapLabel.cget("text"))
+        self.averageLabel = tk.Label(self.addLapFrame, text=f"Average Lap Time: {averageLap if averageLap is not None else 'N/A'}")
+        self.averageLabel.grid(row=1, column=0, columnspan=2, pady=10)
+
+        bestLap = manager.GetBestLap(self.selectedMapLabel.cget("text"))
+        self.bestLabel = tk.Label(self.addLapFrame, text=f"Best Lap Time: {bestLap if bestLap is not None else 'N/A'}")
+        self.bestLabel.grid(row=2, column=0, columnspan=2, pady=10)
+
+        self.carLabel = tk.Label(self.addLapFrame, text="Car:")
+        self.carLabel.grid(row=3, column=0, pady=10)
+
+        self.carEntry = tk.Entry(self.addLapFrame)
+        self.carEntry.grid(row=3, column=1, pady=10)
+
+        self.timeLabel = tk.Label(self.addLapFrame, text="Lap Time:")
+        self.timeLabel.grid(row=4, column=0, pady=10)
+
+        self.timeEntry = tk.Entry(self.addLapFrame)
+        self.timeEntry.grid(row=4, column=1, pady=10)
+
+        self.playerLabel = tk.Label(self.addLapFrame, text="Player:")
+        self.playerLabel.grid(row=5, column=0, pady=10)
+
+        self.playerEntry = tk.Entry(self.addLapFrame)
+        self.playerEntry.grid(row=5, column=1, pady=10)
+
+        self.addLapButton = tk.Button(self.addLapFrame, text="Add Lap", command=self.addLapToDB)
+        self.addLapButton.grid(row=6, column=0, columnspan=2, pady=10)
+
+    def addLapToDB(self):
+        manager.AddLap(self.selectedMapLabel.cget("text"), self.carEntry.get(), self.timeEntry.get(), self.playerEntry.get())
+        self.addLapWindow.destroy()
+
 
 if __name__ == "__main__":
-    app = ConsoleApplication()
+    root = tk.Tk()
+    app = Main(root)
+    root.mainloop()

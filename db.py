@@ -1,15 +1,14 @@
 import sqlite3 as sql
 from sqlite3 import Error
 import os as os
-from player import Player
-from lap import Lap
+from models import Player, Lap
 
 class Manager:
     
     def __init__(self):
         self.connection = self.CreateConnection()
         self.cursor = self.connection.cursor()
-        self.maps = ["Bathurst Mt. panorama", "Monza", "Spa", "Nurburgring", "Suzuka", "Watkins Glen"]
+        self.maps = ["Bathurst Mt. Panorama", "Monza", "Spa", "Nurburgring", "Suzuka", "Watkins Glen"]
         self.players = []
         self.laps = []
         if self.connection is not None:
@@ -81,9 +80,10 @@ class Manager:
 
     def AddLap(self, map, carType, lapTime, playerName):
         playerId = self.AddPlayer(playerName)
-        self.cursor.execute("INSERT INTO Laps (map, carType, lapTime, playerId) VALUES (?, ?, ?, ?)", (map, carType, lapTime, playerId))
+        self.cursor.execute("INSERT INTO Laps (map, carType, lapTime, playerId) VALUES (?, ?, ?, ?)", (map, carType, float(lapTime), playerId))
         self.connection.commit()
-        lapId = self.cursor.lastrowid
+        if playerId is not None:
+            lapId = self.cursor.lastrowid
         lap = Lap(lapId, map, carType, lapTime, playerId)
         self.laps.append(lap)
         return True
@@ -135,7 +135,7 @@ class Manager:
         for lap in self.laps:
             if lap.map == map:
                 lapCount += 1
-                lapTime += lap.lapTime
+                lapTime += float(lap.lapTime)
         if lapCount > 0:
             return f"{lapTime / lapCount:.2f}"
         else:

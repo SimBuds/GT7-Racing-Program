@@ -9,7 +9,7 @@ class Main(tk.Frame):
         super().__init__(master)
         self.master = master
         self.master.title("Lap Time Tracker")
-        self.master.geometry("405x420")
+        self.master.geometry("405x435")
         self.master.resizable(False, False)
         self.grid()
 

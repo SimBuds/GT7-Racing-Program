@@ -20,7 +20,7 @@ class Manager:
 
     def CreateConnection(self):
         try:
-            connection = sql.connect("RacingManager.db")
+            connection = sql.connect("database.db")
             return connection
         except Error as e:
             print(e)

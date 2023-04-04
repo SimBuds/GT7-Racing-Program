@@ -1,8 +1,8 @@
-import manager as m
+import db as manager
 
 class ConsoleApplication:
     def __init__(self):
-        self.manager = m.Manager()
+        self.manager = manager.Manager()
         self.exit = False
         self.mainMenu()
 

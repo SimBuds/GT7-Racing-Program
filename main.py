@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from manager import Manager  # Changed the import statement
+from db import Manager  # Changed the import statement
 
 manager = Manager()
 manager.CreateDB()

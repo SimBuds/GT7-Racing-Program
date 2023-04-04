@@ -63,7 +63,7 @@ class Manager:
             playerId = self.cursor.lastrowid
             player = Player(playerId, name)
             self.players.append(player)
-            return player
+            return player.id
         else:
             return player.id
 
@@ -72,18 +72,21 @@ class Manager:
             if player.name == name:
                 return player
         return None
+    
+    def GetLap(self, lapId):
+        for lap in self.laps:
+            if lap.id == lapId:
+                return lap
+        return None
 
     def AddLap(self, map, carType, lapTime, playerName):
         playerId = self.AddPlayer(playerName)
-        if playerId is not None:
-            self.cursor.execute("INSERT INTO Laps (map, carType, lapTime, playerId) VALUES (?, ?, ?, ?)", (map, carType, lapTime, playerId))
-            self.connection.commit()
-            lapId = self.cursor.lastrowid
-            newLap = Lap(lapId, map, carType, lapTime, playerId)
-            self.laps.append(newLap)
-            return True
-        else:
-            return False
+        self.cursor.execute("INSERT INTO Laps (map, carType, lapTime, playerId) VALUES (?, ?, ?, ?)", (map, carType, lapTime, playerId))
+        self.connection.commit()
+        lapId = self.cursor.lastrowid
+        lap = Lap(lapId, map, carType, lapTime, playerId)
+        self.laps.append(lap)
+        return True
 
     #View laps for a specific map
     def ViewLaps(self, map):
@@ -91,4 +94,50 @@ class Manager:
             if lap.map == map:
                 print(lap)
 
+    #View all laps
+    def ViewAllLaps(self):
+        for lap in self.laps:
+            print(lap)
+    
+    #View all players
+    def ViewAllPlayers(self):
+        for player in self.players:
+            print(player)
+    
+    #View all laps for a specific player
+    def ViewPlayerLaps(self, playerName):
+        player = self.GetPlayer(playerName)
+        if player is not None:
+            for lap in self.laps:
+                if lap.playerId == player.id:
+                    print(lap)
+        else:
+            print("Player not found")
+
+    #View best lap for for a specific map
+    def ViewBestLap(self, map):
+        bestLap = None
+        for lap in self.laps:
+            if lap.map == map:
+                if bestLap is None:
+                    bestLap = lap
+                elif lap.lapTime < bestLap.lapTime:
+                    bestLap = lap
+        if bestLap is not None:
+            print(bestLap)
+        else:
+            print("No laps found for map")
+    
+    #View average lap time for a specific map
+    def ViewAverageLapTime(self, map):
+        total = 0
+        count = 0
+        for lap in self.laps:
+            if lap.map == map:
+                total += lap.lapTime
+                count += 1
+        if count > 0:
+            print(f"Average lap time for {map} is {total / count}")
+        else:
+            print("No laps found for map")
     

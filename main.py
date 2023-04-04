@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from db import Manager
+from manager import Manager
 
 manager = Manager()
 
@@ -9,7 +9,7 @@ class Main(tk.Frame):
         super().__init__(master)
         self.master = master
         self.master.title("Lap Time Tracker")
-        self.master.geometry("405x435")
+        self.master.geometry("405x485")
         self.master.resizable(False, False)
         self.grid()
 
@@ -19,7 +19,6 @@ class Main(tk.Frame):
         self.mapLabel = tk.Label(self, text="Choose a map to record your lap time:")
         self.mapLabel.grid(row=1, column=0, columnspan=10, pady=10)
 
-        # Create PhotoImage objects for the maps
         self.mapImages = []
         self.mapImages.append(tk.PhotoImage(file="maps/bathurst.png"))
         self.mapImages.append(tk.PhotoImage(file="maps/monza.png"))
@@ -28,7 +27,6 @@ class Main(tk.Frame):
         self.mapImages.append(tk.PhotoImage(file="maps/suzuka.png"))
         self.mapImages.append(tk.PhotoImage(file="maps/watkins_glenn.png"))
 
-        # Display the maps as clickable images
         self.mapLabels = []
         for i in range(len(self.mapImages)):
             label = tk.Label(self, image=self.mapImages[i])
@@ -36,8 +34,10 @@ class Main(tk.Frame):
             label.grid(row = i // 2 + 2, column = i % 2)
             self.mapLabels.append(label)
 
-        # Create a label to display the selected map
         self.selectedMapLabel = tk.Label(self, text="No map selected")
+
+        self.showPlayersButton = tk.Button(self, text="Show Players", command=self.ViewAllPlayers)
+        self.showPlayersButton.grid(row=5, column=0, columnspan=10, pady=10)
 
     def onMapClick(self, index):
         self.selectedMapLabel.config(text=manager.maps[index])
@@ -84,6 +84,19 @@ class Main(tk.Frame):
         manager.AddLap(self.selectedMapLabel.cget("text"), self.carEntry.get(), self.timeEntry.get(), self.playerEntry.get())
         self.addLapWindow.destroy()
 
+    def ViewAllPlayers(self):
+        self.viewPlayersWindow = tk.Toplevel(self.master)
+        self.viewPlayersWindow.title("View Players")
+        self.viewPlayersWindow.geometry("250x250")
+        self.viewPlayersWindow.resizable(False, False)
+        self.viewPlayersFrame = tk.Frame(self.viewPlayersWindow)
+        self.viewPlayersFrame.grid()
+
+        self.players = manager.ViewPlayers()
+        self.playerList = tk.Listbox(self.viewPlayersFrame)
+        for player in self.players:
+            self.playerList.insert(tk.END, player)
+        self.playerList.grid(row=0, column=0, columnspan=2, pady=10)       
 
 if __name__ == "__main__":
     root = tk.Tk()

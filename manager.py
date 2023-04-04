@@ -53,7 +53,6 @@ class Manager:
         for lap in laps:
             self.laps.append(Lap(lap[0], lap[1], lap[2], lap[3], lap[4]))
 
-    #Add lap to database while creating a user if they don't exist
     def AddPlayer(self, name):
         player = self.GetPlayer(name)
         if player is None:
@@ -88,33 +87,12 @@ class Manager:
         self.laps.append(lap)
         return True
 
-    #View laps for a specific map
-    def ViewLaps(self, map):
-        for lap in self.laps:
-            if lap.map == map:
-                print(lap)
-
-    #View all laps
-    def ViewAllLaps(self):
-        for lap in self.laps:
-            print(lap)
-    
-    #View all players
-    def ViewAllPlayers(self):
+    def ViewPlayers(self):
+        players = []
         for player in self.players:
-            print(player)
-    
-    #View all laps for a specific player
-    def ViewPlayerLaps(self, playerName):
-        player = self.GetPlayer(playerName)
-        if player is not None:
-            for lap in self.laps:
-                if lap.playerId == player.id:
-                    print(lap)
-        else:
-            print("Player not found")
+            players.append(player.name)
+        return players
 
-    # View best lap for a specific map
     def GetBestLap(self, map):
         bestLap = None
         for lap in self.laps:
@@ -128,7 +106,6 @@ class Manager:
         else:
             return None
 
-    # View average lap time for a specific map
     def GetAverageLap(self, map):
         lapCount = 0
         lapTime = 0

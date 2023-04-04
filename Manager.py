@@ -114,8 +114,8 @@ class Manager:
         else:
             print("Player not found")
 
-    #View best lap for for a specific map
-    def ViewBestLap(self, map):
+    # View best lap for a specific map
+    def GetBestLap(self, map):
         bestLap = None
         for lap in self.laps:
             if lap.map == map:
@@ -124,20 +124,19 @@ class Manager:
                 elif lap.lapTime < bestLap.lapTime:
                     bestLap = lap
         if bestLap is not None:
-            print(bestLap)
+            return f"{bestLap.lapTime}"
         else:
-            print("No laps found for map")
-    
-    #View average lap time for a specific map
-    def ViewAverageLapTime(self, map):
-        total = 0
-        count = 0
+            return None
+
+    # View average lap time for a specific map
+    def GetAverageLap(self, map):
+        lapCount = 0
+        lapTime = 0
         for lap in self.laps:
             if lap.map == map:
-                total += lap.lapTime
-                count += 1
-        if count > 0:
-            print(f"Average lap time for {map} is {total / count}")
+                lapCount += 1
+                lapTime += lap.lapTime
+        if lapCount > 0:
+            return f"{lapTime / lapCount:.2f}"
         else:
-            print("No laps found for map")
-    
+            return None

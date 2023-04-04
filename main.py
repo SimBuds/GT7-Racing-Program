@@ -85,18 +85,28 @@ class Main(tk.Frame):
         self.addLapWindow.destroy()
 
     def ViewAllPlayers(self):
-        self.viewPlayersWindow = tk.Toplevel(self.master)
-        self.viewPlayersWindow.title("View Players")
-        self.viewPlayersWindow.geometry("250x250")
-        self.viewPlayersWindow.resizable(False, False)
-        self.viewPlayersFrame = tk.Frame(self.viewPlayersWindow)
-        self.viewPlayersFrame.grid()
+        self.viewAllPlayersWindow = tk.Toplevel(self.master)
+        self.viewAllPlayersWindow.title("All Players")
+        self.viewAllPlayersWindow.geometry("200x250")
+        self.viewAllPlayersWindow.resizable(False, False)
+        self.viewAllPlayersFrame = tk.Frame(self.viewAllPlayersWindow)
+        self.viewAllPlayersFrame.grid()
 
-        self.players = manager.ViewPlayers()
-        self.playerList = tk.Listbox(self.viewPlayersFrame)
+        self.players = manager.GetPlayers()
+
+        self.playerList = tk.Listbox(self.viewAllPlayersFrame, width=50, height=10)
+        self.playerList.grid(row=0, column=0, columnspan=2, pady=10)
         for player in self.players:
             self.playerList.insert(tk.END, player)
-        self.playerList.grid(row=0, column=0, columnspan=2, pady=10)       
+
+        self.playerList.bind("<<ListboxSelect>>", self.onPlayerSelect)
+
+        self.playerLapsLabel = tk.Label(self.viewAllPlayersFrame, text="Player Laps:")
+        self.playerLapsLabel.grid(row=1, column=0, columnspan=2, pady=10)
+
+        self.playerLaps = tk.Listbox(self.viewAllPlayersFrame, width=50, height=10)
+        self.playerLaps.grid(row=2, column=0, columnspan=2, pady=10)
+
 
 if __name__ == "__main__":
     root = tk.Tk()

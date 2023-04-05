@@ -143,3 +143,10 @@ class Manager:
             return f"{lapTime / lapCount:.2f}"
         else:
             return None
+
+    def GetAllLaps(self, map):
+        laps = []
+        for lap in self.laps:
+            if lap.map == map:
+                laps.append(lap)
+        return laps

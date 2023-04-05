@@ -48,6 +48,8 @@ class Manager:
             self.players.append(Player(player[0], player[1]))
 
     def AddPlayer(self, name):
+        if not name.isalpha():
+            return False
         player = self.GetPlayer(name)
         if player is None:
             self.cursor.execute("INSERT INTO Players (name) VALUES (?)", (name,))
@@ -86,6 +88,12 @@ class Manager:
                 return player
         return None
     
+    def GetPlayerName(self, playerId):
+        for player in self.players:
+            if player.id == playerId:
+                return f"{player.name}"
+        return None
+    
     def GetAllPlayers(self):
         return self.players
     
@@ -102,6 +110,10 @@ class Manager:
         return None
 
     def AddLap(self, map, carType, lapTime, playerName):
+        if not carType.isalpha():
+            return False
+        if not lapTime.isnumeric():
+            return False
         playerId = self.AddPlayer(playerName)
         self.cursor.execute("INSERT INTO Laps (map, carType, lapTime, playerId) VALUES (?, ?, ?, ?)", (map, carType, float(lapTime), playerId))
         self.connection.commit()
@@ -120,7 +132,7 @@ class Manager:
                 elif lap.lapTime < bestLap.lapTime:
                     bestLap = lap
         if bestLap is not None:
-            return f"{bestLap.lapTime}"
+            return f"{bestLap.lapTime, self.GetPlayerName(bestLap.playerId)}"
         else:
             return None
 

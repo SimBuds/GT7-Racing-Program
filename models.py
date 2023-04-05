@@ -6,7 +6,6 @@ class Player:
 
     def __str__(self):
         return f"Id: {self.id}, Name: {self.name}"
-    
 class Lap:
     
     def __init__(self, id, map, carType, lapTime, playerId):

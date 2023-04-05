@@ -110,12 +110,8 @@ class Manager:
         return None
 
     def AddLap(self, map, carType, lapTime, playerName):
-        if not carType.isalpha():
-            return False
-        if not lapTime.isnumeric():
-            return False
         playerId = self.AddPlayer(playerName)
-        self.cursor.execute("INSERT INTO Laps (map, carType, lapTime, playerId) VALUES (?, ?, ?, ?)", (map, carType, float(lapTime), playerId))
+        self.cursor.execute("INSERT INTO Laps (map, carType, lapTime, playerId) VALUES (?, ?, ?, ?)", (map, carType, lapTime, playerId))
         self.connection.commit()
         if playerId is not None:
             lapId = self.cursor.lastrowid

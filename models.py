@@ -12,7 +12,7 @@ class Lap:
         self.id = id
         self.map = map
         self.carType = carType
-        self.lapTime = lapTime
+        self.lapTime = float(lapTime)
         self.playerId = playerId
 
     def __str__(self):

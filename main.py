@@ -32,7 +32,7 @@ class Main(tk.Frame):
         self.lbl1 = tk.Label(self, text="Grand Turismo 7 Lap Time Tracker", font=("Helvetica", 16, "bold"))
         self.lbl1.grid(row=0, column=0, columnspan=2, pady=20, sticky='n')
 
-        self.mapLabel = tk.Label(self, text="Choose a map to record your lap time:", font=("Helvetica", 12))
+        self.mapLabel = tk.Label(self, text="Choose a circuit to record your lap time:", font=("Helvetica", 12))
         self.mapLabel.grid(row=1, column=0, columnspan=2, pady=10, sticky='n')
 
         self.mapImages = []
@@ -54,7 +54,7 @@ class Main(tk.Frame):
         self.addPlayerButton = tk.Button(self, text="Add Player", command=self.AddPlayer)
         self.addPlayerButton.grid(row=5, column=1, pady=10, padx=(10, 0), sticky='w')
 
-        self.selectedMapLabel = tk.Label(self, text="No Map Selected", font=("Helvetica", 12, "bold"))
+        self.selectedMapLabel = tk.Label(self, text="No circuit Selected", font=("Helvetica", 12, "bold"))
         self.selectedMapLabel.grid(row=6, column=0, columnspan=2, pady=10, sticky='n')
 
         self.updateWindowSize()

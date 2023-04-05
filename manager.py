@@ -13,8 +13,8 @@ class Manager:
         self.laps = []
         if self.connection is not None:
             self.CreateDB()
-            self. LoadPlayers()
-            self. LoadLaps()
+            self.LoadPlayers()
+            self.LoadLaps()
         else:
             print("Error: Connection failed")
 
@@ -58,7 +58,28 @@ class Manager:
             return player.id
         else:
             return player.id
+        
+    def DeletePlayer(self, name):
+        player = self.GetPlayer(name)
+        if player is not None:
+            self.cursor.execute("DELETE FROM Players WHERE name = ?", (name,))
+            self.cursor.execute("DELETE FROM Laps WHERE playerId = ?", (player.id,))
+            self.connection.commit()
+            self.players.remove(player)
+            return True
+        else:
+            return False
 
+    def EditPlayer(self, name, newName):
+        player = self.GetPlayer(name)
+        if player is not None:
+            self.cursor.execute("UPDATE Players SET name = ? WHERE name = ?", (newName, name))
+            self.connection.commit()
+            player.name = newName
+            return True
+        else:
+            return False
+        
     def GetPlayer(self, name):
         for player in self.players:
             if player.name == name:

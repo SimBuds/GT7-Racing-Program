@@ -132,7 +132,7 @@ class Manager:
                 elif lap.lapTime < bestLap.lapTime:
                     bestLap = lap
         if bestLap is not None:
-            return f"{bestLap.lapTime, self.GetPlayerName(bestLap.playerId)}"
+            return f"{self.GetPlayerName(bestLap.playerId)}: {bestLap.lapTime}"
         else:
             return None
 

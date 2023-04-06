@@ -54,7 +54,6 @@ class Application(tk.Frame):
             tk.Label(self, text=manager.maps[i], font=("Helvetica", 12, "bold"))
             label.bind("<Button-1>", lambda event, index=i: self.OnMapClick(index))
             label.bind("<Enter>", lambda event, index=i: self.OnMapHover(index))
-            label.bind("<Leave>", lambda event: self.OnMapLeave())
             label.grid(row=i // 2 + 2, column=i % 2, padx=20, pady=10, sticky='wens')
             self.mapLabels.append(label)
 
@@ -76,13 +75,11 @@ class Application(tk.Frame):
         self.master.geometry(f"{width}x{height}")
 
     def OnMapHover(self, index):
-        map_name = manager.maps[index]
-        self.selectedMapLabel.config(text=f"Map: {map_name}")
-
-    def OnMapLeave(self):
-        self.selectedMapLabel.config(text="No Map Selected")
+        mapName = manager.maps[index]
+        self.selectedMapLabel.config(text=f"Map: {mapName}")
 
     def OnMapClick(self, index):
+        self.selectedMapIndex = index
         self.selectedMapLabel.config(text=manager.maps[index])
         self.AddLap()
 

@@ -2,6 +2,8 @@ import sqlite3 as sql
 from sqlite3 import Error
 import os as os
 from models import Player, Lap
+import tkinter as tk
+from tkinter import messagebox
 
 class Manager:
     
@@ -46,9 +48,29 @@ class Manager:
         players = self.cursor.fetchall()
         for player in players:
             self.players.append(Player(player[0], player[1]))
+    
+    def LapInputCheck(self, input):
+        try:
+            float(input)
+        except ValueError:
+            messagebox.showerror("Error", "Please input a lap time in format '<seconds>.<milliseconds>'")
+            return False
+        return True
+    
+    def CarInputCheck(self, input):
+        if not  all(letter.isalnum() or letter.isspace() or letter == "-" or letter == "/" for letter in input):
+            messagebox.showerror("Error", "The car name cannot contain a special character.")
+            return False
+        return True
+    
+    def PlayerInputCheck(self, input):
+        if all(letter.isalpha() or letter.isspace() for letter in input):
+            return True
+        messagebox.showerror("Error", "The player name cannot contain special characters or numbers.")
+        return False
 
     def AddPlayer(self, name):
-        if not name.strip():
+        if not name.strip() or not self.PlayerInputCheck(name) or name == "":
             return False
         player = self.GetPlayer(name)
         if player is None:
@@ -73,7 +95,7 @@ class Manager:
             return False
 
     def EditPlayer(self, name, newName):
-        if not newName.strip():
+        if not newName.strip() or not self.PlayerInputCheck(newName):
             return False
         player = self.GetPlayer(name)
         if player is not None:
@@ -112,8 +134,9 @@ class Manager:
         return None
 
     def AddLap(self, map, carType, lapTime, playerName):
-        if lapTime == "" or not playerName.strip():
+        if lapTime == "" or not playerName.strip() or not self.LapInputCheck(lapTime) or carType == "" or not self.CarInputCheck(carType):
             return False
+
         playerId = self.AddPlayer(playerName)
         self.cursor.execute("INSERT INTO Laps (map, carType, lapTime, playerId) VALUES (?, ?, ?, ?)", (map, carType, lapTime, playerId))
         self.connection.commit()

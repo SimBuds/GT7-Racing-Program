@@ -144,12 +144,9 @@ class Application(tk.Frame):
         playerName = self.selected_player.get()
 
         if mapName and carType and lapTime and playerName != "Select a player":
-            added = manager.AddLap(mapName, carType, lapTime, playerName)
-            if added:
+            if manager.AddLap(mapName, carType, lapTime, playerName):
                 messagebox.showinfo("Success", "Lap added successfully.")
                 self.addLapWindow.destroy()
-            else:
-                messagebox.showerror("Error", "Failed to add lap.")
         else:
             messagebox.showerror("Error", "All fields must be filled.")
 
@@ -229,8 +226,7 @@ class Application(tk.Frame):
         selected = self.playersListbox.curselection()
         if selected:
             selected = self.playersListbox.get(selected)
-            deleted = manager.DeletePlayer(selected)
-            if deleted:
+            if manager.DeletePlayer(selected):
                 messagebox.showinfo("Success", "Player deleted successfully.")
                 self.viewPlayersWindow.destroy()
             else:
@@ -271,11 +267,9 @@ class Application(tk.Frame):
                     self.viewPlayersWindow.destroy()
                     self.ViewAllPlayers()
                 else:
-                    messagebox.showerror("Error", "Failed to update player.")
+                    messagebox.showerror("Error", "No player selected.")
             else:
-                messagebox.showerror("Error", "No player selected.")
-        else:
-            messagebox.showerror("Error", "Player name cannot be empty.")
+                messagebox.showerror("Error", "Player name cannot be empty.")
 
     def AddPlayer(self):
         self.addPlayerWindow = tk.Toplevel(self.master)
@@ -303,8 +297,7 @@ class Application(tk.Frame):
             if added:
                 messagebox.showinfo("Success", "Player added successfully.")
                 self.addPlayerWindow.destroy()
-            else:
-                messagebox.showerror("Error", "Failed to add player.")
+
         else:
             messagebox.showerror("Error", "Player name cannot be empty.")
 

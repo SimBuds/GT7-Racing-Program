@@ -5,20 +5,28 @@ from manager import Manager
 
 manager = Manager()
 
-class Main(tk.Frame):
+class Application(tk.Frame):
 
     def __init__(self, master):
         super().__init__(master)
         self.master = master
         self.master.title("Lap Time Tracker")
-        self.master.columnconfigure(0, weight=1)
-        self.master.rowconfigure(0, weight=1)
-        self.pack(fill=tk.BOTH, expand=True)
-        self.grid()
+        self.master.resizable(False, False)
+        self.pack()
+        self.CenterWindow()
         self.Menu()
 
+    def CenterWindow(self):
+        screenWidth = self.master.winfo_screenwidth()
+        screenHeight = self.master.winfo_screenheight()
+        x = (screenWidth / 2) - (600 / 2)
+        y = (screenHeight / 2) - (600 / 2)
+        self.master.geometry(f"600x600+{int(x)}+{int(y)}")
+
     def Menu(self):
+        self.menu = tk.Menu(self.master)
         self.master.resizable(False, False)
+        self.CenterWindow()
         self.master.grab_set()
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
@@ -45,6 +53,8 @@ class Main(tk.Frame):
             label = tk.Label(self, image=self.mapImages[i], borderwidth=2, relief="groove")
             tk.Label(self, text=manager.maps[i], font=("Helvetica", 12, "bold"))
             label.bind("<Button-1>", lambda event, index=i: self.OnMapClick(index))
+            label.bind("<Enter>", lambda event, index=i: self.OnMapHover(index))
+            label.bind("<Leave>", lambda event: self.OnMapLeave())
             label.grid(row=i // 2 + 2, column=i % 2, padx=20, pady=10, sticky='wens')
             self.mapLabels.append(label)
 
@@ -65,6 +75,13 @@ class Main(tk.Frame):
         height = self.master.winfo_height()
         self.master.geometry(f"{width}x{height}")
 
+    def OnMapHover(self, index):
+        map_name = manager.maps[index]
+        self.selectedMapLabel.config(text=f"Map: {map_name}")
+
+    def OnMapLeave(self):
+        self.selectedMapLabel.config(text="No Map Selected")
+
     def OnMapClick(self, index):
         self.selectedMapLabel.config(text=manager.maps[index])
         self.AddLap()
@@ -73,8 +90,8 @@ class Main(tk.Frame):
         self.addLapWindow = tk.Toplevel(self.master)
         self.addLapWindow.transient(self.master)
         self.addLapWindow.title("Add Lap")
+        self.addLapWindow.resizable(False, False)
         self.addLapWindow.grab_set()
-        self.addLapWindow.focus_set()
 
         self.addLapWindow.columnconfigure(0, weight=1)
         self.addLapWindow.columnconfigure(1, weight=1)
@@ -152,23 +169,24 @@ class Main(tk.Frame):
         self.scrollbar = ttk.Scrollbar(self.viewLapsFrame)
         self.scrollbar.grid(row=0, column=1, sticky="ns", padx=10)
 
-        self.lapsListbox = tk.Listbox(self.viewLapsFrame, width=30, height=15, font=("Helvetica", 12), yscrollcommand=self.scrollbar.set, justify=tk.CENTER)
+        self.lapsListbox = tk.Listbox(self.viewLapsFrame, width=80, height=20, font=("Helvetica", 12), yscrollcommand=self.scrollbar.set, justify=tk.CENTER)
         self.lapsListbox.grid(row=0, column=0, sticky="nsew")
         self.scrollbar.config(command=self.lapsListbox.yview)
 
         self.lapsListbox.bind("<<ListboxSelect>>", self.OnLapSelect)
 
         laps = manager.GetAllLaps(self.selectedMapLabel.cget("text"))
+
         for lap in laps:
             self.lapsListbox.insert(tk.END, lap)
 
-        self.selectedLapLabel = tk.Label(self.viewLapsFrame, text="", font=("Helvetica", 12))
-        self.selectedLapLabel.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
-
+        self.selectedLapLabel = tk.Label(self.viewLapsFrame, text="Selected Lap: N/A", font=("Helvetica", 12, "bold"))
+        self.selectedLapLabel.grid(row=1, column=0, columnspan=2, pady=20)
 
         self.viewLapsWindow.update()
         self.viewLapsWindow.minsize(self.viewLapsWindow.winfo_width(), self.viewLapsWindow.winfo_height())
         self.viewLapsWindow.geometry(f"+{int((self.viewLapsWindow.winfo_screenwidth() / 2) - (self.viewLapsWindow.winfo_width() / 2))}+{int((self.viewLapsWindow.winfo_screenheight() / 2) - (self.viewLapsWindow.winfo_height() / 2))}")
+
 
     def OnLapSelect(self, event):
         widget = event.widget
@@ -182,8 +200,8 @@ class Main(tk.Frame):
         self.viewPlayersWindow = tk.Toplevel(self.master)
         self.viewPlayersWindow.title("Players")
         self.viewPlayersWindow.transient(self.master)
-        self.viewPlayersWindow.grab_set()
         self.viewPlayersWindow.resizable(False, False)
+        self.viewPlayersWindow.grab_set()
 
         self.viewPlayersFrame = tk.Frame(self.viewPlayersWindow)
         self.viewPlayersFrame.grid(padx=20, pady=20)
@@ -208,6 +226,7 @@ class Main(tk.Frame):
 
         self.viewPlayersWindow.update()
         self.viewPlayersWindow.minsize(self.viewPlayersWindow.winfo_width(), self.viewPlayersWindow.winfo_height())
+        self.viewPlayersWindow.geometry(f"+{int((self.viewPlayersWindow.winfo_screenwidth() / 2) - (self.viewPlayersWindow.winfo_width() / 2))}+{int((self.viewPlayersWindow.winfo_screenheight() / 2) - (self.viewPlayersWindow.winfo_height() / 2))}")
 
     def DeletePlayer(self):
         selected = self.playersListbox.curselection()
@@ -224,7 +243,9 @@ class Main(tk.Frame):
 
     def EditPlayer(self):
         self.editPlayerWindow = tk.Toplevel(self.master)
+        self.editPlayerWindow.transient(self.master)
         self.editPlayerWindow.title("Edit Player")
+        self.editPlayerWindow.resizable(False, False)
         self.editPlayerWindow.grab_set()
 
         self.editPlayerLabel = tk.Label(self.editPlayerWindow, text="Enter New Player Name:")
@@ -237,6 +258,8 @@ class Main(tk.Frame):
         self.updatePlayerButton.grid(row=1, column=0, columnspan=2, pady=10)
 
         self.editPlayerWindow.update()
+        self.editPlayerWindow.minsize(self.editPlayerWindow.winfo_width(), self.editPlayerWindow.winfo_height())
+        self.editPlayerWindow.geometry(f"+{int((self.editPlayerWindow.winfo_screenwidth() / 2) - (self.editPlayerWindow.winfo_width() / 2))}+{int((self.editPlayerWindow.winfo_screenheight() / 2) - (self.editPlayerWindow.winfo_height() / 2))}")
 
     def UpdatePlayerInDB(self):
         playerName = self.playerNameEntry.get()
@@ -259,9 +282,10 @@ class Main(tk.Frame):
 
     def AddPlayer(self):
         self.addPlayerWindow = tk.Toplevel(self.master)
+        self.addPlayerWindow.transient(self.master)
         self.addPlayerWindow.title("Add Player")
+        self.addPlayerWindow.resizable(False, False)
         self.addPlayerWindow.grab_set()
-
         self.addPlayerLabel = tk.Label(self.addPlayerWindow, text="Enter Player Name:")
         self.addPlayerLabel.grid(row=0, column=0, padx=20, pady=10, sticky='e')
 
@@ -272,6 +296,8 @@ class Main(tk.Frame):
         self.submitPlayerButton.grid(row=1, column=0, columnspan=2, pady=10)
 
         self.addPlayerWindow.update()
+        self.addPlayerWindow.minsize(self.addPlayerWindow.winfo_width(), self.addPlayerWindow.winfo_height())
+        self.addPlayerWindow.geometry(f"+{int((self.addPlayerWindow.winfo_screenwidth() / 2) - (self.addPlayerWindow.winfo_width() / 2))}+{int((self.addPlayerWindow.winfo_screenheight() / 2) - (self.addPlayerWindow.winfo_height() / 2))}")
 
     def AddPlayerToDB(self):
         playerName = self.playerNameEntry.get().strip()
@@ -287,5 +313,5 @@ class Main(tk.Frame):
 
 if __name__ == "__main__":
     root = tk.Tk()
-    app = Main(root)
+    app = Application(root)
     root.mainloop()

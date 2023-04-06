@@ -48,7 +48,7 @@ class Manager:
             self.players.append(Player(player[0], player[1]))
 
     def AddPlayer(self, name):
-        if not name.isalpha():
+        if not name.strip():
             return False
         player = self.GetPlayer(name)
         if player is None:
@@ -73,6 +73,8 @@ class Manager:
             return False
 
     def EditPlayer(self, name, newName):
+        if not newName.strip():
+            return False
         player = self.GetPlayer(name)
         if player is not None:
             self.cursor.execute("UPDATE Players SET name = ? WHERE name = ?", (newName, name))
@@ -110,6 +112,8 @@ class Manager:
         return None
 
     def AddLap(self, map, carType, lapTime, playerName):
+        if lapTime == "" or not playerName.strip():
+            return False
         playerId = self.AddPlayer(playerName)
         self.cursor.execute("INSERT INTO Laps (map, carType, lapTime, playerId) VALUES (?, ?, ?, ?)", (map, carType, lapTime, playerId))
         self.connection.commit()

@@ -143,7 +143,14 @@ class Application(tk.Frame):
         lapTime = self.timeEntry.get()
         playerName = self.selected_player.get()
 
-        if mapName and carType and lapTime and playerName != "Select a player":
+        if carType and lapTime and playerName != "Select a player":
+            try:
+                lapTimeTest = float(lapTime)
+                if lapTimeTest <= 0:
+                    raise ValueError("Lap time must be greater than 0.")
+            except ValueError as e:
+                messagebox.showerror("Error", f"Invalid lap time: {e}")
+                return
             added = manager.AddLap(mapName, carType, lapTime, playerName)
             if added:
                 messagebox.showinfo("Success", "Lap added successfully.")

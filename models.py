@@ -16,4 +16,4 @@ class Lap:
         self.playerId = playerId
 
     def __str__(self):
-        return f"Id: {self.id}, Map: {self.map}, Car Type: {self.carType}, Lap Time: {self.lapTime}, Player Id: {self.playerId}"
+        return f" Map: {self.map}, Car Type: {self.carType}, Lap Time: {self.lapTime}, Player Id: {self.playerId}"
